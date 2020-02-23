@@ -11,25 +11,38 @@ class App extends React.Component {
     this.baseHTML = 'https://financial-modeling-backend-sd.herokuapp.com/getstockinfo';
 
     this.state = {
-      ticker: '',
-      x: [],
-      y: [[]],
-      names: []
+      stockInfo: {
+        companyName: '',
+        ticker: '',
+        x: [],
+        y: [[]],
+        names: []
+      },
+      loggedIn: false
     }
 
+    this.handleAuthorization = this.handleAuthorization.bind(this);
     this.updateTicker = this.updateTicker.bind(this);
   }
 
   render() {
     let graph = <div className="m-2 p-2">Nothing to display!</div>
-    if (this.state.ticker != '') {
-      graph = <Graph x={this.state.x} y={this.state.y} names={this.state.names} displayName={`Company Name (${this.state.ticker})`}></Graph>
+    if (this.state.stockInfo.ticker != '') {
+      graph = <Graph stockInfo={this.state.stockInfo}></Graph>
     }
 
     return <div className="App">
-      <Navbar searchHandler={this.updateTicker}></Navbar>
+      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.updateTicker} authHandler={this.handleAuthorization}></Navbar>
       {graph}
     </div>
+  }
+
+  handleAuthorization() {
+    if (this.state.loggedIn) {
+      alert('logged in');
+    } else {
+      alert('logged out');
+    }
   }
 
   updateTicker(ticker) {
@@ -37,9 +50,13 @@ class App extends React.Component {
     const endDate = '2019-10-22';
 
     this.setState({
-      x: [],
-      y: [],
-      names: []
+      stockInfo: {
+        companyName: '',
+        ticker: '',
+        x: [],
+        y: [[]],
+        names: []
+      }
     })
 
     fetch(`${this.baseHTML}/?stock=${ticker}&start=${startDate}&end=${endDate}`, {
@@ -51,10 +68,13 @@ class App extends React.Component {
       })
       .then((json) => {
         this.setState({
-          ticker: ticker,
-          x: json.x,
-          y: json.y,
-          names: json.names
+          stockInfo: {
+            companyName: 'filler',
+            ticker: ticker,
+            x: json.x,
+            y: json.y,
+            names: json.names
+          }
         });
       }, (error) => {
         alert(error.message);

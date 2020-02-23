@@ -9,10 +9,10 @@ class Graph extends React.Component {
         super(props);
 
         this.state = {
-            x: props.x,
-            y: props.y,
-            names: props.names,
-            displayName: props.displayName
+            x: props.stockInfo.x,
+            y: props.stockInfo.y,
+            names: props.stockInfo.names,
+            displayName: `${props.stockInfo.companyName} (${props.stockInfo.ticker})`
         }
 
         this.getDataFromState = this.getDataFromState.bind(this);
