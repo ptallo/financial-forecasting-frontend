@@ -1,38 +1,26 @@
 import React from 'react';
 import LoginModal from './LoginModal';
+import SignupModal from './SignupModal';
+import SearchForm from './SearchForm';
 
 
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.searchHandler = props.searchHandler;
-        this.state = { value: '', loggedIn: props.loggedIn };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = { loggedIn: props.loggedIn };
     }
 
     render() {
-        return <nav className="navbar navbar-light bg-light">
-            <form className="form-inline">
-                <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={this.state.value} onChange={this.handleChange} />
-                <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.handleSubmit}>Search</button>
-            </form>
-            <button type="button" className="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">{this.state.loggedIn ? 'Logout!' : 'Login!'}</button>
-            <LoginModal loggedIn={this.state.loggedIn} loginHandler={this.props.loginHandler}></LoginModal>
-        </nav>
-    }
-
-    handleChange(event) {
-        this.setState({ value: event.target.value });
-    }
-
-    handleSubmit(event) {
-        const searchValue = this.state.value;
-        this.searchHandler(searchValue);
-        event.preventDefault();
-        this.setState({ value: '' });
+        return <div>
+            <nav className="navbar navbar-light bg-light d-flex">
+                <SearchForm searchHandler={this.props.searchHandler}></SearchForm>
+                {this.state.loggedIn ? <h1></h1> : <button type="button" className="btn btn-outline-dark m-2" data-toggle="modal" data-target="#signupModal">Sign up!</button>}
+                <button type="button" className="btn btn-outline-primary m-2" data-toggle="modal" data-target="#loginModal">{this.state.loggedIn ? 'Logout!' : 'Login!'}</button>
+            </nav>
+            <SignupModal signupHandler={this.props.signupHandler}></SignupModal>
+            <LoginModal loginHandler={this.props.loginHandler}></LoginModal>
+        </div>
     }
 }
 

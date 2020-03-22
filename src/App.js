@@ -22,6 +22,7 @@ class App extends React.Component {
     }
 
     this.handleAuthorization = this.handleAuthorization.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
     this.updateTicker = this.makeTickerCall.bind(this);
   }
 
@@ -32,7 +33,7 @@ class App extends React.Component {
     }
 
     return <div className="App">
-      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.makeTickerCall} loginHandler={this.handleAuthorization}></Navbar>
+      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.makeTickerCall} loginHandler={this.handleAuthorization} signupHandler={this.handleSignup}></Navbar>
       {graph}
     </div>
   }
@@ -59,6 +60,10 @@ class App extends React.Component {
       }, (error) => {
         console.log(error);
       });
+  }
+
+  handleSignup(username, password) {
+    alert(`Signup with username ${username} and password ${password}`);
   }
 
   makeTickerCall(ticker) {
