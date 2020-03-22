@@ -15,6 +15,7 @@ class SignupModal extends React.Component {
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handlePasswordConfirm = this.handlePasswordConfirm.bind(this);
         this.isValidSubmit = this.isValidSubmit.bind(this);
+        this.doPasswordsMatch = this.doPasswordsMatch.bind(this);
     }
 
     render() {
@@ -33,6 +34,7 @@ class SignupModal extends React.Component {
                                 <label htmlFor="usernameInput">Username</label>
                                 <input type="text" className="form-control" id="usernameInput" placeholder="Username" onChange={this.handleUsernameChange} />
                             </div>
+                            {!this.doPasswordsMatch() && this.state.passwordConfirm.length != 0 ? <p className="text-danger">Passwords don't match!</p> : <h1></h1>}
                             <div className="form-group">
                                 <label htmlFor="inputPassword">Password</label>
                                 <input type="password" className="form-control" id="inputPassword" placeholder="Password" onChange={this.handlePasswordChange} />
@@ -50,7 +52,11 @@ class SignupModal extends React.Component {
     }
 
     isValidSubmit() {
-        return this.state.password == this.state.passwordConfirm && this.state.password.length != 0 && this.state.username.length != 0
+        return this.doPasswordsMatch() && this.state.password.length != 0 && this.state.username.length != 0;
+    }
+
+    doPasswordsMatch() {
+        return this.state.password == this.state.passwordConfirm;
     }
 
     handleFormSubmit() {
