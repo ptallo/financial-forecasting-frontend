@@ -20,7 +20,7 @@ class Navbar extends React.Component {
                 <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.handleSubmit}>Search</button>
             </form>
             <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">{this.state.loggedIn ? 'Logout!' : 'Login!'}</button>
-            <LoginModal></LoginModal>
+            <LoginModal loggedIn={this.state.loggedIn} loginHandler={this.props.loginHandler}></LoginModal>
         </nav>
     }
 

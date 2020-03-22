@@ -32,17 +32,13 @@ class App extends React.Component {
     }
 
     return <div className="App">
-      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.updateTicker} authHandler={this.handleAuthorization}></Navbar>
+      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.updateTicker} loginHandler={this.handleAuthorization}></Navbar>
       {graph}
     </div>
   }
 
-  handleAuthorization() {
-    if (this.state.loggedIn) {
-      alert('logged in');
-    } else {
-      alert('logged out');
-    }
+  handleAuthorization(username, password) {
+    alert(`${username} ${password}`);
   }
 
   updateTicker(ticker) {
