@@ -1,14 +1,19 @@
 import React from 'react';
 import './App.css';
+import Cookies from 'universal-cookie';
 
-import Navbar from "./Navbar"
-import Graph from "./Graph"
+import Navbar from "./Navbar";
+import Graph from "./Graph";
+import ApiHandler from "./ApiHandler";
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.baseHTML = 'https://financial-modeling-backend-sd.herokuapp.com/getstockinfo';
+
+    this.cookies = new Cookies();
+    this.apiHandler = new ApiHandler(this.cookies);
+
 
     this.state = {
       stockInfo: {
@@ -18,67 +23,58 @@ class App extends React.Component {
         y: [[]],
         names: []
       },
-      loggedIn: false
+      loggedIn: this.cookies.get("stockAppCookie") ? this.cookies.get("stockAppCookie") : false
     }
 
-    this.handleAuthorization = this.handleAuthorization.bind(this);
+    this.loginHandler = this.loginHandler.bind(this);
+    this.logoutHandler = this.logoutHandler.bind(this);
+    this.signupHandler = this.signupHandler.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
     this.updateTicker = this.updateTicker.bind(this);
+    this.cookieChangeListener = this.cookieChangeListener.bind(this);
+    this.cookies.addChangeListener(this.cookieChangeListener);
   }
 
   render() {
-    let graph = <div className="m-2 p-2">Nothing to display!</div>
-    if (this.state.stockInfo.ticker != '') {
-      graph = <Graph stockInfo={this.state.stockInfo}></Graph>
-    }
-
     return <div className="App">
-      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.updateTicker} authHandler={this.handleAuthorization}></Navbar>
-      {graph}
+      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.searchHandler} loginHandler={this.loginHandler} signupHandler={this.signupHandler} logoutHandler={this.logoutHandler}></Navbar>
+      {this.state.stockInfo.ticker == '' ? <p className="p-2 m-2">Nothing to display!</p> : <Graph stockInfo={this.state.stockInfo}></Graph>}
     </div>
   }
 
-  handleAuthorization() {
-    if (this.state.loggedIn) {
-      alert('logged in');
-    } else {
-      alert('logged out');
-    }
+  loginHandler(username, password) {
+    this.apiHandler.login(username, password);
   }
 
-  updateTicker(ticker) {
-    const startDate = '2019-10-08';
-    const endDate = '2019-10-22';
+  logoutHandler() {
+    this.cookies.remove("stockAppCookie");
+  }
 
+  signupHandler(username, password) {
+    this.apiHandler.signup(username, password);
+  }
+
+  searchHandler(ticker) {
+    this.apiHandler.getTickerInfo(ticker, '2019-10-08', '2019-10-22', this.updateTicker)
+  }
+
+  updateTicker(companyName, ticker, x, y, names) {
     this.setState({
       stockInfo: {
-        companyName: '',
-        ticker: '',
-        x: [],
-        y: [[]],
-        names: []
+        companyName: companyName,
+        ticker: ticker,
+        x: x,
+        y: y,
+        names: names
       }
     })
+  }
 
-    fetch(`${this.baseHTML}/?stock=${ticker}&start=${startDate}&end=${endDate}`, {
-      method: 'GET',
-      mode: 'cors'
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        this.setState({
-          stockInfo: {
-            companyName: 'filler',
-            ticker: ticker,
-            x: json.x,
-            y: json.y,
-            names: json.names
-          }
-        });
-      }, (error) => {
-        alert(error.message);
-      });
+  cookieChangeListener(changeObject) {
+    if (changeObject.name == "stockAppCookie") { 
+      let newVal = changeObject.value ? changeObject.value : false;
+      this.setState({ loggedIn: newVal });
+    }
   }
 }
 
