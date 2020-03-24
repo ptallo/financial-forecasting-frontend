@@ -7,17 +7,16 @@ class ApiHandler {
 
     signup(username, password) {
         fetch(`${this.baseURL}/signup/`, {
-            method: 'GET',
+            method: 'POST',
             mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: username, password: password })
         })
             .then((response) => {
-                if (response.status == 201) {
-                    alert('User successfully created!');
-                } else {
-                    alert('There was a problem while creating your account!');
-                }
+                let alertText = response.status == 200 ?
+                    'User successfully created!' :
+                    'There was a problem while creating your account!'
+                alert(alertText);
             })
     }
 
