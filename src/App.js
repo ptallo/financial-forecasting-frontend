@@ -1,14 +1,19 @@
 import React from 'react';
 import './App.css';
+import Cookies from 'universal-cookie';
 
-import Navbar from "./Navbar"
-import Graph from "./Graph"
+import Navbar from "./Navbar";
+import Graph from "./Graph";
+import ApiHandler from "./ApiHandler";
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.baseHTML = 'https://financial-modeling-backend-sd.herokuapp.com/getstockinfo';
+
+    this.cookies = new Cookies();
+    this.apiHandler = new ApiHandler(this.cookies);
+
 
     this.state = {
       stockInfo: {
@@ -18,72 +23,39 @@ class App extends React.Component {
         y: [[]],
         names: []
       },
-      loggedIn: false
+      loggedIn: this.cookies.get("stockAppCookie") ? this.cookies.get("stockAppCookie") : false
     }
 
-    this.handleAuthorization = this.handleAuthorization.bind(this);
-    this.handleSignup = this.handleSignup.bind(this);
-    this.updateTicker = this.makeTickerCall.bind(this);
+    this.loginHandler = this.loginHandler.bind(this);
+    this.logoutHandler = this.logoutHandler.bind(this);
+    this.signupHandler = this.signupHandler.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
+    this.updateTicker = this.updateTicker.bind(this);
+    this.cookieChangeListener = this.cookieChangeListener.bind(this);
+    this.cookies.addChangeListener(this.cookieChangeListener);
   }
 
   render() {
-    let graph = <div className="m-2 p-2">Nothing to display!</div>
-    if (this.state.stockInfo.ticker != '') {
-      graph = <Graph stockInfo={this.state.stockInfo}></Graph>
-    }
-
     return <div className="App">
-      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.makeTickerCall} loginHandler={this.handleAuthorization} signupHandler={this.handleSignup}></Navbar>
-      {graph}
+      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.searchHandler} loginHandler={this.loginHandler} signupHandler={this.signupHandler} logoutHandler={this.logoutHandler}></Navbar>
+      {this.state.stockInfo.ticker == '' ? <p className="p-2 m-2">Nothing to display!</p> : <Graph stockInfo={this.state.stockInfo}></Graph>}
     </div>
   }
 
-  handleAuthorization(username, password) {
-    let data = {
-      username: username,
-      password: password
-    }
-
-    fetch(`${this.baseHTML}/login/`, {
-      method: 'GET',
-      mode: 'cors',
-      headers : {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        console.log(json);
-      }, (error) => {
-        console.log(error);
-      });
+  loginHandler(username, password) {
+    this.apiHandler.login(username, password);
   }
 
-  handleSignup(username, password) {
-    alert(`Signup with username ${username} and password ${password}`);
+  logoutHandler() {
+    this.cookies.remove("stockAppCookie");
   }
 
-  makeTickerCall(ticker) {
-    const startDate = '2019-10-08';
-    const endDate = '2019-10-22';
+  signupHandler(username, password) {
+    this.apiHandler.signup(username, password);
+  }
 
-    this.updateTicker('', 'AAPL', [], [[]], [])
-
-    fetch(`${this.baseHTML}/?stock=${ticker}&start=${startDate}&end=${endDate}`, {
-      method: 'GET',
-      mode: 'cors'
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        this.updateTicker('filler', ticker, json.x, json.y, json.names)
-      }, (error) => {
-        alert(error.message);
-      });
+  searchHandler(ticker) {
+    this.apiHandler.getTickerInfo(ticker, '2019-10-08', '2019-10-22', this.updateTicker)
   }
 
   updateTicker(companyName, ticker, x, y, names) {
@@ -96,6 +68,13 @@ class App extends React.Component {
         names: names
       }
     })
+  }
+
+  cookieChangeListener(changeObject) {
+    if (changeObject.name == "stockAppCookie") { 
+      let newVal = changeObject.value ? changeObject.value : false;
+      this.setState({ loggedIn: newVal });
+    }
   }
 }
 
