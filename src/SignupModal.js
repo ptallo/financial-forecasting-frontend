@@ -31,8 +31,8 @@ class SignupModal extends React.Component {
                     <div className="modal-body">
                         <form onSubmit={this.handleFormSubmit}>
                             <div className="form-group">
-                                <label htmlFor="usernameInput">Username</label>
-                                <input type="text" className="form-control" id="usernameInput" placeholder="Username" onChange={this.handleUsernameChange} />
+                                <label htmlFor="signupUsernameInput">Username</label>
+                                <input type="text" className="form-control" id="signupUsernameInput" placeholder="Username" onChange={this.handleUsernameChange} />
                             </div>
                             {!this.doPasswordsMatch() && this.state.passwordConfirm.length != 0 ? <p className="text-danger">Passwords don't match!</p> : <h1></h1>}
                             <div className="form-group">

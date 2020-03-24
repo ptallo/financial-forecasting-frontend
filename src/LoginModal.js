@@ -48,6 +48,7 @@ class LoginModal extends React.Component {
             username: '',
             password: ''
         });
+        return false;
     }
 
     handleUsernameChange(event) {
