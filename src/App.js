@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Cookies from 'universal-cookie';
 
-import Navbar from "./Navbar";
+import Navbar from "./navbar/Navbar";
 import Graph from "./Graph";
 import ApiHandler from "./ApiHandler";
 
