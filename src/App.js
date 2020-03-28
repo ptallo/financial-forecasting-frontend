@@ -23,15 +23,9 @@ class App extends React.Component {
         y: [[]],
         names: []
       },
-      loggedIn: this.cookies.get("stockAppCookie") ? this.cookies.get("stockAppCookie") : false
+      loggedIn: this.isLoggedIn()
     }
 
-    this.loginHandler = this.loginHandler.bind(this);
-    this.logoutHandler = this.logoutHandler.bind(this);
-    this.signupHandler = this.signupHandler.bind(this);
-    this.searchHandler = this.searchHandler.bind(this);
-    this.updateTicker = this.updateTicker.bind(this);
-    this.cookieChangeListener = this.cookieChangeListener.bind(this);
     this.cookies.addChangeListener(this.cookieChangeListener);
   }
 
@@ -42,23 +36,23 @@ class App extends React.Component {
     </div>
   }
 
-  loginHandler(username, password) {
+  loginHandler = (username, password) => {
     this.apiHandler.login(username, password);
   }
 
-  logoutHandler() {
+  logoutHandler = () => {
     this.cookies.remove("stockAppCookie");
   }
 
-  signupHandler(username, password) {
+  signupHandler = (username, password) => {
     this.apiHandler.signup(username, password);
   }
 
-  searchHandler(ticker) {
+  searchHandler = (ticker) => {
     this.apiHandler.getTickerInfo(ticker, '2019-10-08', '2019-10-22', this.updateTicker)
   }
 
-  updateTicker(companyName, ticker, x, y, names) {
+  updateTicker = (companyName, ticker, x, y, names) => {
     this.setState({
       stockInfo: {
         companyName: companyName,
@@ -70,11 +64,14 @@ class App extends React.Component {
     })
   }
 
-  cookieChangeListener(changeObject) {
-    if (changeObject.name == "stockAppCookie") { 
-      let newVal = changeObject.value ? changeObject.value : false;
-      this.setState({ loggedIn: newVal });
+  cookieChangeListener = (changeObject) => {
+    if (changeObject.name == "stockAppCookie") {
+      this.setState({ loggedIn: changeObject.value ? changeObject.value : false });
     }
+  }
+
+  isLoggedIn = () => {
+    return this.cookies.get("stockAppCookie") ? this.cookies.get("stockAppCookie") : false
   }
 }
 
