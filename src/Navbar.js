@@ -6,11 +6,6 @@ import SearchForm from './SearchForm';
 
 
 class Navbar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { loggedIn: props.loggedIn };
-    }
-
     render() {
         let signupButton = <button type="button" className="btn btn-outline-success ml-auto m-2" data-toggle="modal" data-target="#signupModal">Sign up</button>
         let searchForm = <SearchForm searchHandler={this.props.searchHandler}></SearchForm>
@@ -20,13 +15,17 @@ class Navbar extends React.Component {
         return <div>
             <nav className="navbar navbar-light bg-light d-flex flex-row">
                 <a className="navbar-brand"> TheStockSite </a>
-                {this.state.loggedIn ? null : signupButton}
-                {this.state.loggedIn ? searchForm : null}
-                {this.state.loggedIn ? logoutButton : loginButton}
+                {this.props.loggedIn ? null : signupButton}
+                {this.props.loggedIn ? searchForm : null}
+                {this.props.loggedIn ? logoutButton : loginButton}
             </nav>
             <SignupModal signupHandler={this.props.signupHandler}></SignupModal>
             <LoginModal loginHandler={this.props.loginHandler}></LoginModal>
         </div>
+    }
+
+    loginHandler = () => {
+        this.props.loginHandler();
     }
 }
 

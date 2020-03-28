@@ -21,15 +21,17 @@ class ApiHandler {
     }
 
     login(username, password) {
-        console.log('sending login request');
-        fetch(`${this.baseURL}/login/`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: { 'Authorization': `Basic ${btoa(`${username}:${password}`)}` }
-        })
-            .then((response) => { return response.json() })
-            .then((json) => { this.cookies.set("stockAppCookie", json.token) })
-            .catch(this.handleApiError);
+        if (username.length != 0 && password.length != 0) {
+            fetch(`${this.baseURL}/login/`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: { 'Authorization': `Basic ${btoa(`${username}:${password}`)}` }
+            })
+                .then((response) => { return response.json() })
+                .then((json) => { this.cookies.set("stockAppCookie", json.token) })
+                .catch(this.handleApiError);
+        }
+
     }
 
     getTickerInfo(ticker, startDate, endDate, updateTickerCallback) {
@@ -44,7 +46,7 @@ class ApiHandler {
     }
 
     handleApiError(error) {
-        alert(`Error while sending Api request!`);
+        console.log(`${error.name}: ${error.message}`);
     }
 
     getAuthToken() {
