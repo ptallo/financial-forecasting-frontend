@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 
 class LoginModal extends React.Component {
     constructor(props) {
@@ -8,10 +9,6 @@ class LoginModal extends React.Component {
             username: '',
             password: ''
         }
-
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);   
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
 
     render() {
@@ -32,7 +29,7 @@ class LoginModal extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleInputPassword">Password</label>
-                                <input type="password" className="form-control" id="exampleInputPassword" placeholder="Password" onChange={this.handlePasswordChange}/>
+                                <input type="password" className="form-control" id="exampleInputPassword" placeholder="Password" onChange={this.handlePasswordChange} />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
@@ -41,21 +38,22 @@ class LoginModal extends React.Component {
             </div>
         </div>
     }
-    
-    handleFormSubmit() {
-        this.props.loginHandler(this.state.username, this.state.password);
+
+    handleFormSubmit = (event) => {
+        event.preventDefault();
+        $('#loginModal').modal('toggle');
         this.setState({
             username: '',
             password: ''
-        });
-        return false;
+        })
+        this.props.loginHandler(this.state.username, this.state.password);
     }
 
-    handleUsernameChange(event) {
+    handleUsernameChange = (event) => {
         this.setState({ username: event.target.value });
     }
 
-    handlePasswordChange(event) {
+    handlePasswordChange = (event) => {
         this.setState({ password: event.target.value });
     }
 }
