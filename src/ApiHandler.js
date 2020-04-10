@@ -1,7 +1,9 @@
 
 class ApiHandler {
-    constructor(cookies) {
-        this.baseURL = 'https://financial-modeling-backend-sd.herokuapp.com';
+    constructor(cookies, debug=true) {
+        this.baseURL = debug ? 
+            'http://localhost:5000' : 
+            'https://financial-modeling-backend-sd.herokuapp.com';
         this.cookies = cookies;
         this.validTickers = {};
     }
@@ -26,10 +28,14 @@ class ApiHandler {
             fetch(`${this.baseURL}/login/`, {
                 method: 'GET',
                 mode: 'cors',
-                headers: { 'Authorization': `Basic ${btoa(`${username}:${password}`)}` }
+                headers: { 
+                    'Authorization': `Basic ${btoa(`${username}:${password}`)}` ,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
             })
-                .then((response) => { return response.json() })
-                .then((json) => { this.cookies.set("stockAppCookie", json.token) })
+                .then((response) => { return response.json(); })
+                .then((json) => { this.cookies.set("stockAppCookie", json.token); })
                 .catch(this.handleApiError);
         }
 
@@ -80,7 +86,6 @@ class ApiHandler {
             fetch(`${this.baseURL}/getvalidtickers/`, {
                 method: 'GET',
                 mode: 'cors',
-                headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
             })
                 .then((response) => { return response.json() })
                 .then((json) => { 
