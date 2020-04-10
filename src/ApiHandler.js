@@ -3,6 +3,7 @@ class ApiHandler {
     constructor(cookies) {
         this.baseURL = 'https://financial-modeling-backend-sd.herokuapp.com';
         this.cookies = cookies;
+        this.validTickers = {};
     }
 
     signup(username, password) {
@@ -45,12 +46,59 @@ class ApiHandler {
             .catch(this.handleApiError);
     }
 
+    getFavorites(getFavoritesCallback) {
+        fetch(`${this.baseURL}/getfavorites/`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
+        })
+            .then((response) => { return response.json() })
+            .then((json) => { getFavoritesCallback(json); })
+            .catch(this.handleApiError);
+    }
+
+    addFavorite(ticker) {
+        fetch(`${this.baseURL}/addfavorite/?ticker=${ticker}`, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
+        })
+            .catch(this.handleApiError);
+    }
+
+    deleteFavorite(ticker) {
+        fetch(`${this.baseURL}/delfavorite/?ticker=${ticker}`, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
+        })
+            .catch(this.handleApiError);
+    }
+
+    getValidTickers(getValidTickersCallback) {
+        if (this.validTickers.length == 0) {
+            fetch(`${this.baseURL}/getvalidtickers/`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
+            })
+                .then((response) => { return response.json() })
+                .then((json) => { 
+                    this.validTickers = json; 
+                    getValidTickersCallback(this.validTickers);
+                })
+                .catch(this.handleApiError);
+        } else {
+            getValidTickersCallback(this.validTickers);
+        }
+    }
+
     handleApiError(error) {
         console.log(`${error.name}: ${error.message}`);
     }
 
     getAuthToken() {
-        return this.cookies.get("stockAppCookie")
+        return this.cookies.get("stockAppCookie");
     }
 }
 
