@@ -7,44 +7,38 @@ import {
 class Graph extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            x: props.stockInfo.x,
-            y: props.stockInfo.y,
-            names: props.stockInfo.names,
-            displayName: `${props.stockInfo.companyName} (${props.stockInfo.ticker})`
-        }
-
-        this.getDataFromState = this.getDataFromState.bind(this);
-        this.getVerticalTicks = this.getVerticalTicks.bind(this);
     }
 
     render() {
         return <div className='container-fluid p-2'>
-            <h1 className="m-2">{this.state.displayName}</h1>
+            <h1 className="m-2">{this.getDisplayName()}</h1>
             <LineChart width={600} height={300} data={this.getDataFromState()} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" />
                 <XAxis dataKey="name" tick={false} />
-                <YAxis ticks={this.getVerticalTicks(this.state.y[0])} interval={0} type='number' domain={(val) => { return val * 0.5; }, (val) => { return val * 1.5; }} />
+                <YAxis ticks={this.getVerticalTicks(this.props.stockInfo.y[0])} interval={0} type='number' domain={(val) => { return val * 0.5; }, (val) => { return val * 1.5; }} />
                 <Tooltip />
             </LineChart>
         </div>
     }
 
-    getDataFromState() {
+    getDisplayName = () => {
+        return `${this.props.stockInfo.companyName} (${this.props.stockInfo.ticker})`
+    }
+
+    getDataFromState = () => {
         const data = []
-        for (let i = 0; i < this.state.x.length; i++) {
+        for (let i = 0; i < this.props.stockInfo.x.length; i++) {
             data.push({
-                name: this.state.x[i],
-                uv: this.state.y[0][i],
-                pv: this.state.y[0][i] + 10,
-                amt: this.state.y[0][i]
+                name: this.props.stockInfo.x[i],
+                uv: this.props.stockInfo.y[0][i],
+                pv: this.props.stockInfo.y[0][i] + 10,
+                amt: this.props.stockInfo.y[0][i]
             })
         }
         return data;
     }
 
-    getVerticalTicks(yvals) {
+    getVerticalTicks = (yvals) => {
         const min = Math.min(...yvals);
         const max = Math.max(...yvals);
 
