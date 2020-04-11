@@ -14,7 +14,7 @@ class Navbar extends React.Component {
 
         return <div>
             <nav className="navbar navbar-light bg-light d-flex flex-row">
-                <a className="navbar-brand"> TheStockSite </a>
+                <a className="navbar-brand"> MLStockSite </a>
                 {this.props.loggedIn ? null : signupButton}
                 {this.props.loggedIn ? searchForm : null}
                 {this.props.loggedIn ? logoutButton : loginButton}
@@ -22,10 +22,6 @@ class Navbar extends React.Component {
             <SignupModal signupHandler={this.props.handlers.signup}></SignupModal>
             <LoginModal loginHandler={this.props.handlers.login}></LoginModal>
         </div>
-    }
-
-    loginHandler = () => {
-        this.props.loginHandler();
     }
 }
 

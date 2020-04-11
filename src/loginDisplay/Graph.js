@@ -13,8 +13,8 @@ class Graph extends React.Component {
         if (this.props.stockInfo.ticker == '')
             return <h1 className="col-8"></h1>
 
-        return <div className='container-fluid col-8 p-2'>
-            <h1 className="m-2">{this.getDisplayName()}</h1>
+        return <div>
+            <h1>{this.getDisplayName()}</h1>
             <LineChart width={600} height={300} data={this.formatDataFromProps()} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" />
                 <XAxis dataKey="name" tick={false} />

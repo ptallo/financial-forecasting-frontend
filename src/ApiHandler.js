@@ -41,8 +41,8 @@ class ApiHandler {
 
     }
 
-    getTickerInfo(ticker, startDate, endDate, updateTickerCallback) {
-        fetch(`${this.baseURL}/getstockinfo/?stock=${ticker}&start=${startDate}&end=${endDate}`, {
+    getTickerInfo(ticker, daterange, updateTickerCallback) {
+        fetch(`${this.baseURL}/getstockinfo/?stock=${ticker}&daterange=${daterange}`, {
             method: 'GET',
             mode: 'cors',
             headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
@@ -69,6 +69,8 @@ class ApiHandler {
             mode: 'cors',
             headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
         })
+            .then((response) => { return response.json() })
+            .then((json) => { this.localStorageHandler.set('favorites', json); })
             .catch(this.handleApiError);
     }
 
@@ -78,6 +80,8 @@ class ApiHandler {
             mode: 'cors',
             headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
         })
+            .then((response) => { return response.json() })
+            .then((json) => { this.localStorageHandler.set('favorites', json); })
             .catch(this.handleApiError);
     }
 
@@ -87,7 +91,7 @@ class ApiHandler {
             mode: 'cors',
         })
             .then((response) => { return response.json() })
-            .then((json) => {  })
+            .then((json) => { })
             .catch(this.handleApiError);
     }
 

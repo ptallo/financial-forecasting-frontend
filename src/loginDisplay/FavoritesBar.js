@@ -11,11 +11,9 @@ class FavoritesBar extends React.Component {
     }
 
     render() {
-        return <div className="col-3 p-2">
-            <ul className="list-group">
-                {Array.isArray(this.props.favorites) ? this.getListElements(this.props.favorites) : this.getListElements([])}
-            </ul>
-        </div>
+        return <ul className="list-group">
+            {Array.isArray(this.props.favorites) ? this.getListElements(this.props.favorites) : this.getListElements([])}
+        </ul>
     }
 
     getListElements = (favorites) => {
@@ -33,7 +31,9 @@ class FavoritesBar extends React.Component {
             </a>
         } else {
             return <a href="#" className="list-group-item list-group-item-action active d-flex justify-content-between" key={i}
-                onMouseOver={() => { this.hoverNewItem(i) }}>{ticker}</a>
+                onMouseOver={() => { this.hoverNewItem(i) }}>
+                {ticker}
+            </a>
         }
     }
 
@@ -48,7 +48,9 @@ class FavoritesBar extends React.Component {
         } else {
             return <a href="#" className="list-group-item list-group-item-action d-flex justify-content-between" key={i}
                 onClick={() => { this.selectNewItem(ticker, i); }}
-                onMouseOver={() => { this.hoverNewItem(i) }}>{ticker}</a>
+                onMouseOver={() => { this.hoverNewItem(i) }}>
+                {ticker}
+            </a>
         }
     }
 
@@ -56,7 +58,7 @@ class FavoritesBar extends React.Component {
         this.setState({
             selected: i
         });
-        this.props.selectHandler(ticker);
+        this.props.handlers.search(ticker);
     }
 
     hoverNewItem = (i) => {
@@ -67,14 +69,15 @@ class FavoritesBar extends React.Component {
         }
     }
 
-    deleteItem = (ticker, i) => {
-        console.log(`remove ${ticker} ${i}`);
-    }
-
     getDeleteButton = (ticker, i) => {
-        return <button type="button" class="btn btn-outline-danger"
-            onClick={() => { this.deleteItem(ticker, i); }}>
-            remove
+        const eventHandler = (e) => {
+            e.stopPropagation();
+            this.props.handlers.deleteFavorite(ticker);
+        }
+
+        return <button type="button" className="btn btn-outline-danger"
+            onClick={eventHandler}>
+            -
         </button>
     }
 }
