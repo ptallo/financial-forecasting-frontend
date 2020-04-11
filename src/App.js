@@ -2,18 +2,19 @@ import React from 'react';
 import './App.css';
 import Cookies from 'universal-cookie';
 
+import GraphBody from "./loginDisplay/GraphBody";
 import Navbar from "./navbar/Navbar";
-import Graph from "./Graph";
 import ApiHandler from "./ApiHandler";
+import LocalStorageHandler from "./LocalStorageHandler";
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.cookies = new Cookies();
-    this.apiHandler = new ApiHandler(this.cookies);
-
+    this.localStorageHandler = new LocalStorageHandler();
+    this.localStorageHandler.addListener(this.cookieChangeListener);
+    this.apiHandler = new ApiHandler(this.localStorageHandler);
 
     this.state = {
       stockInfo: {
@@ -23,36 +24,25 @@ class App extends React.Component {
         y: [[]],
         names: []
       },
+      favorites: this.getFavorites(),
+      daterange: '1m',
+      validTickers: [],
       loggedIn: this.isLoggedIn()
     }
-
-    this.cookies.addChangeListener(this.cookieChangeListener);
   }
 
   render() {
+    let graphArea = this.state.loggedIn ?
+      <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()}></GraphBody> :
+      <p>Graph Stuff</p>;
+
     return <div className="App">
-      <Navbar loggedIn={this.state.loggedIn} searchHandler={this.searchHandler} loginHandler={this.loginHandler} signupHandler={this.signupHandler} logoutHandler={this.logoutHandler}></Navbar>
-      {this.state.stockInfo.ticker == '' ? <p className="p-2 m-2">Nothing to display!</p> : <Graph stockInfo={this.state.stockInfo}></Graph>}
+      <Navbar loggedIn={this.state.loggedIn} handlers={this.getNavbarHandlers()}></Navbar>
+      {graphArea}
     </div>
   }
 
-  loginHandler = (username, password) => {
-    this.apiHandler.login(username, password);
-  }
-
-  logoutHandler = () => {
-    this.cookies.remove("stockAppCookie");
-  }
-
-  signupHandler = (username, password) => {
-    this.apiHandler.signup(username, password);
-  }
-
-  searchHandler = (ticker) => {
-    this.apiHandler.getTickerInfo(ticker, '2019-10-08', '2019-10-22', this.updateTicker)
-  }
-
-  updateTicker = (companyName, ticker, x, y, names) => {
+  updateTickerCallback = (companyName, ticker, x, y, names) => {
     this.setState({
       stockInfo: {
         companyName: companyName,
@@ -64,14 +54,58 @@ class App extends React.Component {
     })
   }
 
-  cookieChangeListener = (changeObject) => {
-    if (changeObject.name == "stockAppCookie") {
-      this.setState({ loggedIn: changeObject.value ? changeObject.value : false });
+  cookieChangeListener = (key, value) => {
+    if (key == "stockAppCookie") {
+      let newValue = value ? value : false;
+      this.setState({ loggedIn: newValue });
+      if (newValue) {
+        this.apiHandler.getFavorites();
+      } else {
+        this.localStorageHandler.remove('favorites');
+      }
+    } else if (key == 'favorites') {
+      let newValue = value ? value : [];
+      this.setState({ favorites: newValue });
     }
   }
 
-  isLoggedIn = () => {
-    return this.cookies.get("stockAppCookie") ? this.cookies.get("stockAppCookie") : false
+  getGraphBodyHandlers = () => {
+    return {
+      addFavorite: this.addFavorite,
+      deleteFavorite: this.deleteFavorite,
+      search: this.search,
+      updateDaterange: this.updateDaterange,
+    }
+  }
+
+  getNavbarHandlers = () => {
+    return {
+      login: this.login,
+      logout: this.logout,
+      signup: this.signup,
+      search: this.search
+    }
+  }
+
+  isLoggedIn = () => { return this.localStorageHandler.get("stockAppCookie") ? this.localStorageHandler.get("stockAppCookie") : false }
+  getFavorites = () => { return this.localStorageHandler.get("favorites") ? this.localStorageHandler.get("favorites") : [] }
+  login = (u, p) => { this.apiHandler.login(u, p); }
+  logout = () => { this.localStorageHandler.remove("stockAppCookie"); }
+  signup = (u, p) => { this.apiHandler.signup(u, p); }
+  addFavorite = (ticker) => { this.apiHandler.addFavorite(ticker) }
+  deleteFavorite = (ticker) => { this.apiHandler.deleteFavorite(ticker) }
+
+  search = (ticker, daterange = null) => {
+    if (!daterange) {
+      this.apiHandler.getTickerInfo(ticker, this.state.daterange, this.updateTickerCallback);
+    } else {
+      this.apiHandler.getTickerInfo(ticker, daterange, this.updateTickerCallback);
+    }
+  }
+
+  updateDaterange = (daterange) => {
+    this.setState({ daterange: daterange });
+    this.search(this.state.stockInfo.ticker, daterange);
   }
 }
 
