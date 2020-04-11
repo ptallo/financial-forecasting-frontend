@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import Cookies from 'universal-cookie';
 
 import GraphBody from "./loginDisplay/GraphBody";
 import Navbar from "./navbar/Navbar";

@@ -1,6 +1,6 @@
 
 class ApiHandler {
-    constructor(localStorageHandler, debug = true) {
+    constructor(localStorageHandler, debug = false) {
         this.baseURL = debug ?
             'http://localhost:5000' :
             'https://financial-modeling-backend-sd.herokuapp.com';
