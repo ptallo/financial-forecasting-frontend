@@ -1,11 +1,11 @@
 
 class ApiHandler {
-    constructor(cookies, debug=true) {
-        this.baseURL = debug ? 
-            'http://localhost:5000' : 
+    constructor(localStorageHandler, debug = true) {
+        this.baseURL = debug ?
+            'http://localhost:5000' :
             'https://financial-modeling-backend-sd.herokuapp.com';
-        this.cookies = cookies;
-        this.validTickers = {};
+        this.localStorageHandler = localStorageHandler;
+        this.getValidTickers();
     }
 
     signup(username, password) {
@@ -28,14 +28,14 @@ class ApiHandler {
             fetch(`${this.baseURL}/login/`, {
                 method: 'GET',
                 mode: 'cors',
-                headers: { 
-                    'Authorization': `Basic ${btoa(`${username}:${password}`)}` ,
+                headers: {
+                    'Authorization': `Basic ${btoa(`${username}:${password}`)}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             })
                 .then((response) => { return response.json(); })
-                .then((json) => { this.cookies.set("stockAppCookie", json.token); })
+                .then((json) => { this.localStorageHandler.set("stockAppCookie", json.token); })
                 .catch(this.handleApiError);
         }
 
@@ -59,7 +59,7 @@ class ApiHandler {
             headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
         })
             .then((response) => { return response.json() })
-            .then((json) => { getFavoritesCallback(json); })
+            .then((json) => { this.localStorageHandler.set('favorites', json); })
             .catch(this.handleApiError);
     }
 
@@ -81,29 +81,22 @@ class ApiHandler {
             .catch(this.handleApiError);
     }
 
-    getValidTickers(getValidTickersCallback) {
-        if (this.validTickers.length == 0) {
-            fetch(`${this.baseURL}/getvalidtickers/`, {
-                method: 'GET',
-                mode: 'cors',
-            })
-                .then((response) => { return response.json() })
-                .then((json) => { 
-                    this.validTickers = json; 
-                    getValidTickersCallback(this.validTickers);
-                })
-                .catch(this.handleApiError);
-        } else {
-            getValidTickersCallback(this.validTickers);
-        }
+    getValidTickers() {
+        fetch(`${this.baseURL}/getvalidtickers/`, {
+            method: 'GET',
+            mode: 'cors',
+        })
+            .then((response) => { return response.json() })
+            .then((json) => {  })
+            .catch(this.handleApiError);
     }
 
     handleApiError(error) {
-        console.log(`${error.name}: ${error.message}`);
+        throw error;
     }
 
     getAuthToken() {
-        return this.cookies.get("stockAppCookie");
+        return this.localStorageHandler.get("stockAppCookie");
     }
 }
 
