@@ -5,7 +5,8 @@ class FavoritesBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selected: 0
+            selected: 0,
+            hovered: null
         }
     }
 
@@ -24,11 +25,31 @@ class FavoritesBar extends React.Component {
     }
 
     getSelectedElement = (ticker, i) => {
-        return <a href="#" className="list-group-item list-group-item-action active" key={i}>{ticker}</a>
+        if (this.state.hovered == i) {
+            return <a href="#" className="list-group-item list-group-item-action active d-flex justify-content-between" key={i}
+                onMouseLeave={() => { this.hoverNewItem(-1) }}>
+                {ticker}
+                {this.getDeleteButton(ticker, i)}
+            </a>
+        } else {
+            return <a href="#" className="list-group-item list-group-item-action active d-flex justify-content-between" key={i}
+                onMouseOver={() => { this.hoverNewItem(i) }}>{ticker}</a>
+        }
     }
 
     getUnselectedElement = (ticker, i) => {
-        return <a href="#" className="list-group-item list-group-item-action" key={i} onClick={() => { this.selectNewItem(ticker, i); }}>{ticker}</a>
+        if (this.state.hovered == i) {
+            return <a href="#" className="list-group-item list-group-item-action d-flex justify-content-between" key={i}
+                onClick={() => { this.selectNewItem(ticker, i); }}
+                onMouseLeave={() => { this.hoverNewItem(-1) }}>
+                {ticker}
+                {this.getDeleteButton(ticker, i)}
+            </a>
+        } else {
+            return <a href="#" className="list-group-item list-group-item-action d-flex justify-content-between" key={i}
+                onClick={() => { this.selectNewItem(ticker, i); }}
+                onMouseOver={() => { this.hoverNewItem(i) }}>{ticker}</a>
+        }
     }
 
     selectNewItem = (ticker, i) => {
@@ -36,6 +57,25 @@ class FavoritesBar extends React.Component {
             selected: i
         });
         this.props.selectHandler(ticker);
+    }
+
+    hoverNewItem = (i) => {
+        if (i >= 0) {
+            this.setState({ hovered: i })
+        } else {
+            this.setState({ hovered: null })
+        }
+    }
+
+    deleteItem = (ticker, i) => {
+        console.log(`remove ${ticker} ${i}`);
+    }
+
+    getDeleteButton = (ticker, i) => {
+        return <button type="button" class="btn btn-outline-danger"
+            onClick={() => { this.deleteItem(ticker, i); }}>
+            remove
+        </button>
     }
 }
 
