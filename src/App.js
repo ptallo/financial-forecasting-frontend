@@ -33,7 +33,7 @@ class App extends React.Component {
       <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()}></GraphBody> :
       <p>Graph Stuff</p>;
 
-    return <div className="App">
+    return <div className="App bg-light">
       <Navbar loggedIn={this.state.loggedIn} handlers={this.getNavbarHandlers()}></Navbar>
       {graphArea}
     </div>

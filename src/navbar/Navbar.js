@@ -2,7 +2,6 @@ import React from 'react';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import SearchForm from './SearchForm';
-import logo from "./logo.png";
 
 
 
@@ -14,11 +13,8 @@ class Navbar extends React.Component {
         let logoutButton = <button type="button" className="btn btn-outline-primary m-2" onClick={() => { this.props.handlers.logout(); this.setState({ loggedIn: false }); }}>Logout</button>
 
         return <div>
-            <nav className="navbar navbar-light bg-light d-flex flex-row">
-                <a className="navbar-brand">
-                    <img src={logo} width="40" height="40" className="d-inline-block m-2" alt=""/>
-                    MLStockSite 
-                </a>
+            <nav className="navbar navbar-dark bg-dark d-flex flex-row">
+                <a className="navbar-brand" href="#">MLStockSite</a>
                 {this.props.loggedIn ? null : signupButton}
                 {this.props.loggedIn ? searchForm : null}
                 {this.props.loggedIn ? logoutButton : loginButton}
