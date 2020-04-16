@@ -1,6 +1,6 @@
 
 class ApiHandler {
-    constructor(localStorageHandler, debug = false) {
+    constructor(localStorageHandler, debug = true) {
         this.baseURL = debug ?
             'http://localhost:5000' :
             'https://financial-modeling-backend-sd.herokuapp.com';
@@ -48,11 +48,24 @@ class ApiHandler {
             headers: { 'Authorization': `Bearer ${this.getAuthToken()}` }
         })
             .then((response) => { return response.json() })
-            .then((json) => { updateTickerCallback('filler', ticker, json.x, json.y, json.names); })
+            .then((json) => {
+                let lastYFromActual = json.data.filter(obj => obj.name == "actual")[0].y.slice(-1)[0]
+                let lastXFromActual = json.data.filter(obj => obj.name == "actual")[0].x.slice(-1)[0]
+
+                json.data.filter(obj => obj.name != "actual").map(obj => {
+                    obj.x.splice(0, 0, lastXFromActual);
+                    obj.y.splice(0, 0, lastYFromActual);
+                    return obj
+                })
+                
+                if (json.data.map(obj => obj.name).includes("actual")) {
+                    updateTickerCallback(json.ticker, json.name, json.data);
+                }
+            })
             .catch(this.handleApiError);
     }
 
-    getFavorites(getFavoritesCallback) {
+    getFavorites() {
         fetch(`${this.baseURL}/getfavorites/`, {
             method: 'GET',
             mode: 'cors',

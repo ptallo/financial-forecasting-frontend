@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import GraphBody from "./loginDisplay/GraphBody";
+import GraphBody from "./graphDisplay/GraphBody";
 import Navbar from "./navbar/Navbar";
 import ApiHandler from "./ApiHandler";
 import LocalStorageHandler from "./LocalStorageHandler";
@@ -17,11 +17,9 @@ class App extends React.Component {
 
     this.state = {
       stockInfo: {
-        companyName: '',
         ticker: '',
-        x: [],
-        y: [[]],
-        names: []
+        companyName: '',
+        data: [] // Should contain json objects with {name: '', x: [], and y: []}
       },
       favorites: this.getFavorites(),
       daterange: '1m',
@@ -41,14 +39,12 @@ class App extends React.Component {
     </div>
   }
 
-  updateTickerCallback = (companyName, ticker, x, y, names) => {
+  updateTickerCallback = (ticker, companyName, data) => {
     this.setState({
       stockInfo: {
-        companyName: companyName,
         ticker: ticker,
-        x: x,
-        y: y,
-        names: names
+        companyName: companyName,
+        data: data
       }
     })
   }
