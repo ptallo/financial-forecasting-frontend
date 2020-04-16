@@ -5,7 +5,6 @@ class FavoritesBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selected: 0,
             hovered: null
         }
     }
@@ -18,19 +17,23 @@ class FavoritesBar extends React.Component {
 
     getListElements = (favorites) => {
         return favorites.map((item, i) => {
-            return this.state.selected == i ? this.getSelectedElement(item, i) : this.getUnselectedElement(item, i);
+            return this.getSelectedIndex() == i ? this.getSelectedElement(item, i) : this.getUnselectedElement(item, i);
         });
+    }
+
+    getSelectedIndex = () => {
+        return this.props.favorites.indexOf(this.props.ticker)
     }
 
     getSelectedElement = (ticker, i) => {
         if (this.state.hovered == i) {
-            return <a href="#" className="list-group-item list-group-item-action active d-flex justify-content-between" key={i}
+            return <a href="#" className={this.getLiClasses(true)} key={i}
                 onMouseLeave={() => { this.hoverNewItem(-1) }}>
                 {ticker}
                 {this.getDeleteButton(ticker, i)}
             </a>
         } else {
-            return <a href="#" className="list-group-item list-group-item-action active d-flex justify-content-between" key={i}
+            return <a href="#" className={this.getLiClasses(true)} key={i}
                 onMouseOver={() => { this.hoverNewItem(i) }}>
                 {ticker}
             </a>
@@ -39,19 +42,25 @@ class FavoritesBar extends React.Component {
 
     getUnselectedElement = (ticker, i) => {
         if (this.state.hovered == i) {
-            return <a href="#" className="list-group-item list-group-item-action d-flex justify-content-between" key={i}
+            return <a href="#" className={this.getLiClasses(false)} key={i}
                 onClick={() => { this.selectNewItem(ticker, i); }}
                 onMouseLeave={() => { this.hoverNewItem(-1) }}>
                 {ticker}
                 {this.getDeleteButton(ticker, i)}
             </a>
         } else {
-            return <a href="#" className="list-group-item list-group-item-action d-flex justify-content-between" key={i}
+            return <a href="#" className={this.getLiClasses(false)} key={i}
                 onClick={() => { this.selectNewItem(ticker, i); }}
                 onMouseOver={() => { this.hoverNewItem(i) }}>
                 {ticker}
             </a>
         }
+    }
+
+    getLiClasses = (active) => {
+        return active ?
+            "list-group-item list-group-item-action active d-flex justify-content-between p-3" :
+            "list-group-item list-group-item-action d-flex justify-content-between p-3"
     }
 
     selectNewItem = (ticker, i) => {
@@ -75,9 +84,9 @@ class FavoritesBar extends React.Component {
             this.props.handlers.deleteFavorite(ticker);
         }
 
-        return <button type="button" className="btn btn-outline-danger"
+        return <button type="button" className="btn btn-outline-danger btn-sm"
             onClick={eventHandler}>
-            -
+            delete
         </button>
     }
 }
