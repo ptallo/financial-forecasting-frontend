@@ -2,6 +2,7 @@ import React from 'react';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import SearchForm from './SearchForm';
+import logo from "./logo.png";
 
 
 
@@ -14,7 +15,10 @@ class Navbar extends React.Component {
 
         return <div>
             <nav className="navbar navbar-light bg-light d-flex flex-row">
-                <a className="navbar-brand"> MLStockSite </a>
+                <a className="navbar-brand">
+                    <img src={logo} width="40" height="40" className="d-inline-block m-2" alt=""/>
+                    MLStockSite 
+                </a>
                 {this.props.loggedIn ? null : signupButton}
                 {this.props.loggedIn ? searchForm : null}
                 {this.props.loggedIn ? logoutButton : loginButton}
