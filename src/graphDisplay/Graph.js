@@ -68,9 +68,10 @@ class Graph extends React.Component {
     }
 
     transfromDate = x => {
+        let year = x.split("-")[0]
         let monthInt = x.split("-")[1]
         let day = x.split("-")[2]
-        return `${this.getMonth(monthInt)} ${day}`
+        return `${this.getMonth(monthInt)} ${day}, ${year}`
     }
 
     getMonth = i => {

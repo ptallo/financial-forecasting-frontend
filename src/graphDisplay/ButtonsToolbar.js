@@ -1,18 +1,32 @@
 import React from 'react';
 
 class ButtonsToolbar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dateranges: ["1m", "3m", "6m", "1y"]
+        }
+    }
     render() {
         return <div className="btn-toolbar ml-5 my-3" role="toolbar" aria-label="Toolbar with button groups">
             <div className="btn-group mr-2" role="group" aria-label="First group">
-                <button type="button" className="btn btn-primary" onClick={() => { this.props.handlers.addFavorite(this.props.ticker); }}>☆</button>
+                <button type="button" className={this.getFavoritesButtonClass()} onClick={() => { this.props.handlers.addFavorite(this.props.ticker); }}>☆</button>
             </div>
             <div className="btn-group mr-2" role="group" aria-label="Second group">
-                <button type="button" className="btn btn-secondary" onClick={() => { this.props.handlers.updateDaterange("1m"); }}>1m</button>
-                <button type="button" className="btn btn-secondary" onClick={() => { this.props.handlers.updateDaterange("3m"); }}>3m</button>
-                <button type="button" className="btn btn-secondary" onClick={() => { this.props.handlers.updateDaterange("6m"); }}>6m</button>
-                <button type="button" className="btn btn-secondary" onClick={() => { this.props.handlers.updateDaterange("1y"); }}>1y</button>
+                {this.state.dateranges.map(dr => this.getButtonForDaterange(dr))}
             </div>
         </div>
+    }
+
+    getFavoritesButtonClass = () => {
+        return this.props.handlers.getFavorites().indexOf(this.props.ticker) > 0 ? "btn btn-primary" : "btn btn-danger"
+    }
+
+    getButtonForDaterange = (range) => {
+        let classes = range == this.props.daterange ?
+            "btn btn-primary btn-lg" :
+            "btn btn-secondary";
+        return <button type="button" className={classes} onClick={() => { this.props.handlers.updateDaterange(range); }}>{range}</button>
     }
 }
 

@@ -30,7 +30,7 @@ class App extends React.Component {
 
   render() {
     let graphArea = this.state.loggedIn ?
-      <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()}></GraphBody> :
+      <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()} daterange={this.state.daterange}></GraphBody> :
       <p>Graph Stuff</p>;
 
     return <div className="App bg-light">
@@ -66,6 +66,7 @@ class App extends React.Component {
 
   getGraphBodyHandlers = () => {
     return {
+      getFavorites: this.getFavorites,
       addFavorite: this.addFavorite,
       deleteFavorite: this.deleteFavorite,
       search: this.search,
