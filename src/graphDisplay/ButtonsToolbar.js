@@ -19,7 +19,7 @@ class ButtonsToolbar extends React.Component {
     }
 
     getFavoritesButtonClass = () => {
-        return this.props.handlers.getFavorites().indexOf(this.props.ticker) > 0 ? "btn btn-primary" : "btn btn-danger"
+        return this.props.favorites.indexOf(this.props.ticker) < 0 ? "btn btn-success" : "btn btn-danger"
     }
 
     getButtonForDaterange = (range) => {

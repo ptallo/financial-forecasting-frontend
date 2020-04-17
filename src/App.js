@@ -72,7 +72,6 @@ class App extends React.Component {
 
   getGraphBodyHandlers = () => {
     return {
-      getFavorites: this.getFavorites,
       addFavorite: this.addFavorite,
       deleteFavorite: this.deleteFavorite,
       search: this.search,

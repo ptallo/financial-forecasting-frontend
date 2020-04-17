@@ -21,7 +21,7 @@ class GraphBody extends React.Component {
                 <div className="col-7 ml-5 mt-5">
                     <h1 className="ml-5 display-4">{this.props.stockInfo.companyName}</h1>
                     <Graph stockInfo={this.props.stockInfo}></Graph>
-                    <ButtonsToolbar ticker={this.props.stockInfo.ticker} handlers={this.props.handlers} daterange={this.props.daterange}></ButtonsToolbar>
+                    <ButtonsToolbar ticker={this.props.stockInfo.ticker} favorites={this.props.favorites} handlers={this.props.handlers} daterange={this.props.daterange}></ButtonsToolbar>
                 </div>
                 <div className="col-2 mt-5">
                     <h1 className="ml-5 display-4 text-light">a</h1>
