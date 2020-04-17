@@ -29,13 +29,14 @@ class FavoritesBar extends React.Component {
         if (this.state.hovered == i) {
             return <a href="#" className={this.getLiClasses(true)} key={i}
                 onMouseLeave={() => { this.hoverNewItem(-1) }}>
-                {ticker}
+                {this.getText(true, ticker)}
                 {this.getDeleteButton(ticker, i)}
             </a>
         } else {
             return <a href="#" className={this.getLiClasses(true)} key={i}
                 onMouseOver={() => { this.hoverNewItem(i) }}>
-                {ticker}
+                {this.getText(true, ticker)}
+
             </a>
         }
     }
@@ -45,16 +46,25 @@ class FavoritesBar extends React.Component {
             return <a href="#" className={this.getLiClasses(false)} key={i}
                 onClick={() => { this.selectNewItem(ticker, i); }}
                 onMouseLeave={() => { this.hoverNewItem(-1) }}>
-                {ticker}
+                {this.getText(true, ticker)}
                 {this.getDeleteButton(ticker, i)}
             </a>
         } else {
             return <a href="#" className={this.getLiClasses(false)} key={i}
                 onClick={() => { this.selectNewItem(ticker, i); }}
                 onMouseOver={() => { this.hoverNewItem(i) }}>
-                {ticker}
+                {this.getText(false, ticker)}
             </a>
         }
+    }
+
+    getText = (hovered, ticker) => {
+        const validTickers = this.props.handlers.getValidTickers();
+        if (validTickers) {
+            const idx = validTickers.map(i => i[0]).indexOf(ticker);
+            return hovered ? validTickers.map(i => i[1])[idx] : ticker;
+        }
+        return ticker;
     }
 
     getLiClasses = (active) => {

@@ -5,6 +5,7 @@ class ApiHandler {
             'http://localhost:5000' :
             'https://financial-modeling-backend-sd.herokuapp.com';
         this.localStorageHandler = localStorageHandler;
+        this.validTickers = null
         this.getValidTickers();
     }
 
@@ -104,7 +105,7 @@ class ApiHandler {
             mode: 'cors',
         })
             .then((response) => { return response.json() })
-            .then((json) => { })
+            .then((json) => { this.validTickers = json })
             .catch(this.handleApiError);
     }
 

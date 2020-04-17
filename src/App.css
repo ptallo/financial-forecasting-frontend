@@ -1,0 +1,12 @@
+.navbar {
+    margin-bottom: 0px;
+}
+
+.jumbotron{
+    height: 92.6vh;
+    background-image: url('defaultDisplay\\background.jpg');
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+    margin-bottom: 0;
+}

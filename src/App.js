@@ -5,6 +5,7 @@ import GraphBody from "./graphDisplay/GraphBody";
 import Navbar from "./navbar/Navbar";
 import ApiHandler from "./ApiHandler";
 import LocalStorageHandler from "./LocalStorageHandler";
+import DefaultDisplay from './defaultDisplay/DefaultDisplay';
 
 
 class App extends React.Component {
@@ -31,7 +32,7 @@ class App extends React.Component {
   render() {
     let graphArea = this.state.loggedIn ?
       <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()} daterange={this.state.daterange}></GraphBody> :
-      <p>Graph Stuff</p>;
+      <DefaultDisplay></DefaultDisplay>;
 
     return <div className="App bg-light">
       <Navbar loggedIn={this.state.loggedIn} handlers={this.getNavbarHandlers()}></Navbar>
@@ -71,6 +72,7 @@ class App extends React.Component {
       deleteFavorite: this.deleteFavorite,
       search: this.search,
       updateDaterange: this.updateDaterange,
+      getValidTickers: this.getValidTickers
     }
   }
 
@@ -90,6 +92,7 @@ class App extends React.Component {
   signup = (u, p) => { this.apiHandler.signup(u, p); }
   addFavorite = (ticker) => { this.apiHandler.addFavorite(ticker) }
   deleteFavorite = (ticker) => { this.apiHandler.deleteFavorite(ticker) }
+  getValidTickers = () => { return this.apiHandler.validTickers; }
 
   search = (ticker, daterange = null) => {
     if (!daterange) {
