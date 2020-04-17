@@ -5,6 +5,7 @@ import GraphBody from "./graphDisplay/GraphBody";
 import Navbar from "./navbar/Navbar";
 import ApiHandler from "./ApiHandler";
 import LocalStorageHandler from "./LocalStorageHandler";
+import FAQ from "./FAQ";
 import DefaultDisplay from './defaultDisplay/DefaultDisplay';
 
 
@@ -30,13 +31,17 @@ class App extends React.Component {
   }
 
   render() {
-    let graphArea = this.state.loggedIn ?
-      <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()} daterange={this.state.daterange}></GraphBody> :
+    const loggedInBody = <div>
+      <GraphBody stockInfo={this.state.stockInfo} favorites={this.state.favorites} handlers={this.getGraphBodyHandlers()} daterange={this.state.daterange}></GraphBody>
+      <FAQ></FAQ>
+    </div>
+    let body = this.state.loggedIn ?
+      loggedInBody :
       <DefaultDisplay></DefaultDisplay>;
 
     return <div className="App bg-light">
       <Navbar loggedIn={this.state.loggedIn} handlers={this.getNavbarHandlers()}></Navbar>
-      {graphArea}
+      {body}
     </div>
   }
 
